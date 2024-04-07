@@ -1,30 +1,39 @@
 package proyecto;
 
-import java.util.Scanner;
-
-/**
- *
- * @author Andres Felipe
- */
-public class CuentaAhorros extends CuentaBancaria implements Transaccion{
+public class CuentaAhorros extends Banco  {
     
-    public CuentaAhorros(String id, int saldo, Cliente cliente) {
-        super(id, saldo, cliente);
+    @Override
+    public void Retirar() throws Exception{
+        System.out.println("Ingresa la cantidad de dinero a retirar: ");
+        Retiro();
+        if(retiro <= getSaldo()) {
+            transacciones = getSaldo();
+            setSaldo(transacciones - retiro);
+            System.out.println("----------------------------------");
+            System.out.println("Retiraste: " + retiro);
+            System.out.println("Tu saldo actual es: " + getSaldo());
+            System.out.println("----------------------------------");
+        } else if (retiro > getSaldo()){
+            System.out.println("Saldo insuficiente");
+        }
+    }
+    
+    @Override
+    public void Consignar() {
+        System.out.println("Ingresa la cantidad de dinero a consignar: ");
+        Consignado();
+        transacciones = getSaldo();
+        setSaldo(consignacion + transacciones);
+        System.out.println("---------------------------");
+        System.out.println("Agregaste: " + consignacion);
+        System.out.println("Tu saldo actual es: " + getSaldo());
+        System.out.println("---------------------------");
     }
 
     @Override
-    public int depositar() {
-        return 0;
-        
-    }
-
-    @Override
-    public int retirar() {
-        return 0;
-    }
-
-    @Override
-    public int transferir() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void Consultar() {
+        System.out.println("----------------------------------");
+        System.out.println("Tu saldo actual es: " + getSaldo());
+        System.out.println("----------------------------------");
     }
 }
