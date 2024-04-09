@@ -1,15 +1,18 @@
 package proyecto;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public abstract class Banco {
 
     private static int saldo;
-    protected int transacciones;
-    protected int consignacion;
-    protected int retiro;
-    protected HashMap<Integer,String> clientes;
+    public int transacciones;
+    public int consignacion;
+    public int retiro;
+    private HashMap<Integer,Clientes> clientes;
+    private ArrayList<Cuentas> cuentas;
+            
     Scanner sc = new Scanner(System.in);
 
     public static int getSaldo() {
@@ -19,6 +22,7 @@ public abstract class Banco {
     public static void setSaldo(int saldo) {
         Banco.saldo = saldo;
     }
+    //private Iterable<Cuentas> cuentas;
 
     public Banco() {
         this.clientes = new HashMap<>();
@@ -51,7 +55,7 @@ public abstract class Banco {
                     
                 }
                 case 3 -> {
-                    // Crear Cuenta
+                    this.crearCuenta(retiro, saldo, opcion), saldo, opcion);
                 }
                 case 4 -> {
                     verificar();
@@ -70,6 +74,7 @@ public abstract class Banco {
 
     public void menuTransacciones() throws Exception {
         boolean salir2 = false;
+        Cuentas cnt = new Cuentas();
         do {
             System.out.println("Seleccione: ");
             System.out.println("    1. Retirar");
@@ -79,16 +84,13 @@ public abstract class Banco {
             int op = sc.nextInt();
             switch (op) {
                 case 1 -> {
-                    CuentaAhorros re = new CuentaAhorros();
-                    re.Retirar();
+                    cnt.Retirar();
                 }
                 case 2 -> {
-                    CuentaAhorros co = new CuentaAhorros();
-                    co.Consignar();
+                    cnt.Consignar();
                 }
                 case 3 -> {
-                    CuentaAhorros su = new CuentaAhorros();
-                    su.Consultar();
+                    cnt.Consultar();
                 }
                 case 0 -> {
                     System.out.println("Cambiando al menu anterior");
@@ -107,18 +109,13 @@ public abstract class Banco {
         consignacion = sc.nextInt();
     }
     
-    //Métodos abstractos transacciones
-    public abstract void Retirar() throws Exception;
-    public abstract void Consignar();
-    public abstract void Consultar();
-    
-    
     //Metodos crear y mostrar Cliente
     public void crearCliente(int id, String nombre, String apellido) throws Exception {
         if (this.clientes.containsKey(id)) {
-            System.out.println("Cliente repetido");
+            throw new Exception("Cliente ya existe");
         } else {
-            clientes.put(id,nombre);
+            Clientes cliente = new Clientes(id, nombre, apellido);
+            this.clientes.put(id,cliente);
         }
     }
     
@@ -145,4 +142,33 @@ public abstract class Banco {
             System.out.println("El numero ingresado no se encuentra en el sistema");
         }
     }
+    
+    public void crearCuenta(int numero, int saldo, int idCliente) throws Exception {
+		if (!this.clientes.containsKey(idCliente)) {
+			throw new Exception ("Cliente No existente");
+		}else if(this.exiteCuenta(numero)){
+			throw new Exception ("La cuenta ya existe");
+		}else {
+			Cuentas cuenta;
+                        cuenta = new Cuentas(numero, saldo, this.clientes.get(idCliente));
+			this.clientes.get(idCliente).getCuentas().put(numero, cuenta);
+			this.cuentas.add(cuenta);
+		}
+    }
+    
+    public boolean exiteCuenta(int numero) {
+		for(Cuentas cuenta : this.cuentas) {
+			if(cuenta.getNumero() == numero) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+    private void imprimirCuentas() {
+		System.out.println("Num\tSaldo\tTipo\tCliente");
+		for(Cuentas cuenta : this.banco.getCuentas()) {
+			System.out.println(cuenta);
+		}
+	}
 }
