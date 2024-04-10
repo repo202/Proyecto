@@ -1,11 +1,15 @@
 package proyecto;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import persistencia.ArchivoSerializable;
 
-public abstract class Banco {
+public abstract class Banco implements Serializable {
 
     private static int saldo;
     protected int transacciones;
@@ -22,6 +26,8 @@ public abstract class Banco {
     public static void setSaldo(int saldo) {
         Banco.saldo = saldo;
     }
+    private Banco banco;
+    
 
     public Banco() {
         this.cuentas = new HashMap<>();
@@ -110,6 +116,8 @@ public abstract class Banco {
             System.out.println("    2. Consignar");
             System.out.println("    3. Consultar Saldo");
             System.out.println("    4. Transferir");
+            System.out.println("    5. Guardar en archivo serializable");
+            System.out.println("    6. Cargar de archivo serializable");
             System.out.println("    0. Atras");
             int op = sc.nextInt();
             switch (op) {
@@ -128,6 +136,12 @@ public abstract class Banco {
                 case 4 -> {
                     CuentaCorriente tr = new CuentaCorriente();
                     tr.transferir();
+                }
+                case 5 -> {
+                    this.almacenarS();
+                }
+                case 6 -> {
+                    this.cargarS();
                 }
                 case 0 -> {
                     System.out.println("Cambiando al menu anterior");
@@ -222,8 +236,9 @@ public abstract class Banco {
             return "Ahorros";
         } else if (n==2) {
             return "Corriente";
-        }    
-        return null;
+        }else{
+            return null;
+        }
     }
     public void crearCuenta(int numeroCliente, String tipo, int numeroCuenta) throws Exception {
         try {
@@ -253,4 +268,13 @@ public abstract class Banco {
             System.out.println(e.getMessage());
         }
     }
+     
+    private void cargarS() throws FileNotFoundException, ClassNotFoundException, IOException {
+		this.banco = (Banco)ArchivoSerializable.cargar("banco.rf");
+    }
+
+	private void almacenarS() throws FileNotFoundException, IOException {
+		ArchivoSerializable.almacenar("banco.rf", this.banco);
+	}
+
 }
