@@ -4,16 +4,16 @@ import java.util.HashMap;
 
 
 public class Clientes {
-    protected int id;
-    protected String nombre;
-    protected String apellido;
+    private int id;
+    private String nombre;
+    private String apellido;
     private HashMap<Integer, Cuentas> cuentas;
-	
-    public int getIdCliente() {
+
+    public int getId() {
         return id;
     }
 
-    public void setIdCliente(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -32,26 +32,26 @@ public class Clientes {
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-    
-    public Clientes(int id, String nombre, String apellido) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido; 
-        this.cuentas = new HashMap<Integer, Cuentas>();
+
+    public HashMap<Integer, Cuentas> getCuentas() {
+        return cuentas;
+    }
+
+    public void setCuentas(HashMap<Integer, Cuentas> cuentas) {
+        this.cuentas = cuentas;
     }
     
-    public HashMap<Integer, Cuentas> getCuentas() {
-		return cuentas;
-	}
-
-	public void setCuentas(HashMap<Integer, Cuentas> cuentas) {
-		this.cuentas = cuentas;
-	}
-
-
-    @Override
+    
+    public Clientes(int id, String nombre, String apellido) {
+        this.cuentas = new HashMap<>();
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        
+    }
+    
     public String toString() {
-        return "Clientes{" + "id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + '}';
+        return "id: " + id + ", nombre: " + nombre + ", apellido: " + apellido;
     }
     
 }
