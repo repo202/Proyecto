@@ -37,5 +37,10 @@ class Cuentas {
         this.noCuenta = noCuenta;
     }
 
+    @Override
+    public String toString() {
+        return "Cuentas " + "tipoCuenta=" + tipoCuenta + ", noCuenta=" + noCuenta;
+    }
+    
     
 }

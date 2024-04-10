@@ -11,8 +11,8 @@ public abstract class Banco {
     protected int transacciones;
     protected int consignacion;
     protected int retiro;
-    private List<Cuentas> cuentas;
-    private HashMap<Integer,Clientes> clientes;
+    private HashMap<Integer, Cuentas> cuentas;
+    private HashMap<Integer, Clientes> clientes;
     Scanner sc = new Scanner(System.in);
 
     public static int getSaldo() {
@@ -24,7 +24,7 @@ public abstract class Banco {
     }
 
     public Banco() {
-        this.cuentas = new ArrayList<>();
+        this.cuentas = new HashMap<>();
         this.clientes = new HashMap<>();
     }
 
@@ -48,20 +48,20 @@ public abstract class Banco {
                     String apellido = sc.next();
                     System.out.println("Ingresa el numero del cliente: ");
                     int id = sc.nextInt();
-                    crearCliente(id,nombre,apellido);
+                    this.crearCliente(id, nombre, apellido);
                 }
                 case 2 -> {
-                    mostrarCliente();
-                    
+                    this.mostrarCliente();
+
                 }
                 case 3 -> {
-                    datosCuenta();
+                    this.datosCuenta();
                 }
                 case 4 -> {
-                    verificar();
+                    this.verificar();
                 }
                 case 5 -> {
-                    // Mostrar Cuenta
+                    this.mostrarCuenta();
                 }
                 case 0 -> {
                     System.out.println("Saliendo del programa");
@@ -72,7 +72,7 @@ public abstract class Banco {
         } while (salir == false);
     }
 
-    public void menuTransacciones() throws Exception {
+    public void menuTransaccionesAhorros() throws Exception {
         boolean salir2 = false;
         do {
             System.out.println("Seleccione: ");
@@ -102,6 +102,41 @@ public abstract class Banco {
         } while (salir2 == false);
         this.menu();
     }
+    public void menuTransaccionesCorrietne() throws Exception {
+        boolean salir3 = false;
+        do {
+            System.out.println("Seleccione: ");
+            System.out.println("    1. Retirar");
+            System.out.println("    2. Consignar");
+            System.out.println("    3. Consultar Saldo");
+            System.out.println("    4. Transferir");
+            System.out.println("    0. Atras");
+            int op = sc.nextInt();
+            switch (op) {
+                case 1 -> {
+                    CuentaCorriente re = new CuentaCorriente();
+                    re.Retirar();
+                }
+                case 2 -> {
+                    CuentaCorriente co = new CuentaCorriente();
+                    co.Consignar();
+                }
+                case 3 -> {
+                    CuentaCorriente su = new CuentaCorriente();
+                    su.Consultar();
+                }
+                case 4 -> {
+                    CuentaCorriente tr = new CuentaCorriente();
+                    tr.transferir();
+                }
+                case 0 -> {
+                    System.out.println("Cambiando al menu anterior");
+                    salir3 = true;
+                }
+            }
+        } while (salir3 == false);
+        this.menu();
+    }
 
     public void Retiro() {
         retiro = sc.nextInt();
@@ -110,64 +145,112 @@ public abstract class Banco {
     public void Consignado() {
         consignacion = sc.nextInt();
     }
-    
+
     //Métodos abstractos transacciones
     public abstract void Retirar() throws Exception;
+
     public abstract void Consignar();
+
     public abstract void Consultar();
-    
-    
+
     //Metodos crear y mostrar Cliente
     public void crearCliente(int id, String nombre, String apellido) throws Exception {
-        if (this.clientes.containsKey(id)) {
-            System.out.println("Cliente repetido");
-        } else {
-            Clientes c = new Clientes(id,nombre,apellido);
-            clientes.put(id,c);
+        try {
+            if (this.clientes.containsKey(id)) {
+                throw new Exception("Cliente repetido");
+            } else {
+                Clientes c = new Clientes(id, nombre, apellido);
+                clientes.put(id, c);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
-    
-    public void mostrarCliente() {
-        System.out.println("Ingresa el numero del cliente: ");
-        int cuenta = sc.nextInt();
-        if (clientes.get(cuenta) == null) {
-            System.out.println("El numero ingresado no se encuentra en el sistema");
-        } else {
-            System.out.println("-------------------------");
-            System.out.println("Datos del cliente: ");
-            System.out.println(clientes.toString());
-            System.out.println("-------------------------");
+
+    public void mostrarCliente() throws Exception {
+        try {
+            System.out.println("Ingresa el numero del cliente: ");
+            int cuenta = sc.nextInt();
+            if (clientes.get(cuenta) == null) {
+                throw new Exception("El numero ingresado no se encuentra en el sistema");
+            } else {
+                System.out.println("-------------------------");
+                System.out.println("Datos del cliente: ");
+                System.out.println(clientes.toString());
+                System.out.println("-------------------------");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
-    
+
     //Verificador de numero de cuenta
     public void verificar() throws Exception {
-        System.out.println("Ingresa el numero del cliente: ");
-        int num = sc.nextInt();
-        if (clientes.containsKey(num)) {
-            this.menuTransacciones();
-        } else {
-            System.out.println("El numero ingresado no se encuentra en el sistema");
+        try {
+            System.out.println("Ingresa el numero de cuenta: ");
+            int num = sc.nextInt();
+            if (cuentas.containsKey(num) == true) {
+                if (cuentas.get(num).getTipoCuenta().equals("Ahorros")) {
+                    this.menuTransaccionesAhorros();
+                }else {
+                    this.menuTransaccionesCorrietne();
+                }
+            } else if (clientes.containsKey(num) == false) {
+                throw new Exception("El numero ingresado no se encuentra en el sistema");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
-    //Metodo Crear y mostrar Cuenta
-    public void datosCuenta () {
+
+    //Metodos Crear y mostrar Cuenta
+    public void datosCuenta() throws Exception {
         System.out.println("Numero del cliente:");
-	int numeroCliente = sc.nextInt();
-	System.out.println("Tipo de cuenta:");
-	String tipo = sc.next();
-	System.out.println("Numero de cuenta:");
-	int numeroCuenta = sc.nextInt();
-	this.crearCuenta(numeroCliente, tipo, numeroCuenta);
+        int numeroCliente = sc.nextInt();
+        System.out.println("Tipo de cuenta:");
+        System.out.println("1. Ahorros");
+        System.out.println("2. Corriente");
+        int n = sc.nextInt();
+        ahorrosCorriente(n);
+        String tipo = ahorrosCorriente(n);
+        System.out.println("Numero de cuenta:");
+        int numeroCuenta = sc.nextInt();
+        this.crearCuenta(numeroCliente, tipo, numeroCuenta);
     }
-    public void crearCuenta (int numeroCliente, String tipo, int numeroCuenta) {
-        boolean determinante;
-        determinante = clientes.containsKey(numeroCliente);
-        if (determinante == false) {
-            System.out.println("El cliente ingresado no existe");
-        } else if (determinante == true){
-            Cuentas cuenta = new Cuentas(numeroCliente, tipo, numeroCuenta);
-            this.cuentas.add(cuenta);
-        } 
+    public String ahorrosCorriente (int n) throws Exception{
+        if(n == 1) {
+            return "Ahorros";
+        } else if (n==2) {
+            return "Corriente";
+        }    
+        return null;
+    }
+    public void crearCuenta(int numeroCliente, String tipo, int numeroCuenta) throws Exception {
+        try {
+            if (this.clientes.containsKey(numeroCliente)) {
+                Cuentas cu = new Cuentas(numeroCliente, tipo, numeroCuenta);
+                cuentas.put(numeroCuenta, cu);
+            } else {
+                throw new Exception("El id del cliente no se encuentra en el sistema");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+     public void mostrarCuenta() throws Exception {
+        try {
+            System.out.println("Ingresa el numero de la cuenta");
+            int cuenta = sc.nextInt();
+            if (cuentas.get(cuenta) == null) {
+                throw new Exception("El numero ingresado no se encuentra en el sistema");
+            } else {
+                System.out.println("-------------------------");
+                System.out.println("Datos de la cuenta: ");
+                System.out.println(cuentas.toString());
+                System.out.println("-------------------------");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

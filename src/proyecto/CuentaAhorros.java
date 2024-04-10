@@ -1,20 +1,24 @@
 package proyecto;
 
-public class CuentaAhorros extends Banco  {
-    
+public class CuentaAhorros extends Banco {
+
     @Override
-    public void Retirar() throws Exception{
-        System.out.println("Ingresa la cantidad de dinero a retirar: ");
-        Retiro();
-        if(retiro <= getSaldo()) {
-            transacciones = getSaldo();
-            setSaldo(transacciones - retiro);
-            System.out.println("----------------------------------");
-            System.out.println("Retiraste: " + retiro);
-            System.out.println("Tu saldo actual es: " + getSaldo());
-            System.out.println("----------------------------------");
-        } else if (retiro > getSaldo()){
-            System.out.println("Saldo insuficiente");
+    public void Retirar() throws Exception {
+        try {
+            System.out.println("Ingresa la cantidad de dinero a retirar: ");
+            Retiro();
+            if (retiro <= getSaldo()) {
+                transacciones = getSaldo();
+                setSaldo(transacciones - retiro);
+                System.out.println("----------------------------------");
+                System.out.println("Retiraste: " + retiro);
+                System.out.println("Tu saldo actual es: " + getSaldo());
+                System.out.println("----------------------------------");
+            } else if (retiro > getSaldo()) {
+                throw new Exception("Saldo insuficiente");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
     
@@ -33,7 +37,7 @@ public class CuentaAhorros extends Banco  {
     @Override
     public void Consultar() {
         System.out.println("----------------------------------");
-        System.out.println("Tu saldo actual es: " + getSaldo());
+        System.out.println("Tu saldo actual es corriente: " + getSaldo());
         System.out.println("----------------------------------");
     }
 }
